@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Bank</title>
+		<style>
+			label {
+				display:block;
+				padding:10px;
+			}
+			fieldset {
+				width:400px;
+				text-align:right;
+			}
+			font {
+				font-family: "Times New Roman";
+				
+			}
+			body {
+			background-color: coral;
+			}
+		</style>
+		 <script src="web3.min.js"></script>
+	</head>
+	<body>
+	         <font>
+		<fieldset>	
+			<label>Transfer amount<input id="tamt" type="number"/></label>
+			<label>Transfer account number<input id="taccno" type="text"/></label>
+			<label><button id="tranb1" onclick="Transfer()" >Transfer</button></label>
+		</fieldset>
+		<fieldset>
+    			<label>Enter your account number<input id="accno" type="text" /></label>
+			<label><button id="bal" onclick="bal()">balanceof</button></label>
+		</fieldset>
+		<fieldset>	
+			<label>Transfer amount<input id="ttamt" type="number"/></label>
+			<label>From account number<input id="tfrom" type="text"/></label>
+			<label>To account number<input id="tto" type="text"/></label>
+			<label><button id="tranb2" onclick="From()" >TransferFrom</button></label>
+		</fieldset>
+		<fieldset>	
+			<label>Owner account number<input id="aoaccno" type="text"/></label>
+			<label>Spender account number<input id="asaccno" type="text"/></label>
+			<label><button id="tranb3" onclick="allow()" >Allowance</button></label>
+		</fieldset>
+		<fieldset>	
+			<label>Fix limit<input id="fl" type="number"/></label>
+			<label>Spender account number<input id="sa" type="text"/></label>
+			<label><button id="tranb4" onclick="appro()" >Approve</button></label>
+		</fieldset>
+		<fieldset>	
+			<label>new account number<input id="nown" type="text"/></label>
+			<label><button id="tranb5" onclick="newown()" >TransferOwnership</button></label>
+		</fieldset>
+		<pre id="hashresult"></pre>
+    Previous Hash : <pre id="prehashresult"></pre>
+	</font>
+		<script >
+			web3.eth.defaultAccount = web3.eth.accounts[0];
+			var aa=web3.eth.contract([
+	{
+		"constant": true,
+		"inputs": [],
+		"name": "decimals",
+		"outputs": [
+			{
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"payable": false,
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"constant": true,
+		"inputs": [
+			{
+				"name": "_owner",
+				"type": "address"
+			},
+			{
+				"name": "_spender",
+				"type": "address"
+			}
+		],
+		"name": "allowance",
+		"outputs": [
+			{
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"payable": false,
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"constant": true,
+		"inputs": [],
+		"name": "totalSupply",
+		"outputs": [
+			{
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"payable": false,
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"constant": true,
+		"inputs": [],
+		"name": "symbol",
+		"outputs": [
+			{
+				"name": "",
+				"type": "string"
+			}
+		],
+		"payable": false,
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"constant": true,
+		"inputs": [],
+		"name": "owner",
+		"outputs": [
+			{
+				"name": "",
+				"type": "address"
+			}
+		],
+		"payable": false,
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"constant": true,
+		"inputs": [],
+		"name": "name",
+		"outputs": [
+			{
+				"name": "",
+				"type": "string"
+			}
+		],
+		"payable": false,
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"constant": true,
+		"inputs": [
+			{
+				"name": "_owner",
+				"type": "address"
+			}
+		],
+		"name": "balanceOf",
+		"outputs": [
+			{
+				"name": "balance",
+				"type": "uint256"
+			}
+		],
+		"payable": false,
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": true,
+				"name": "owner",
+				"type": "address"
+			},
+			{
+				"indexed": true,
+				"name": "spender",
+				"type": "address"
+			},
+			{
+				"indexed": false,
+				"name": "value",
+				"type": "uint256"
+			}
+		],
+		"name": "Approval",
+		"type": "event"
+	},
+	{
+		"constant": false,
+		"inputs": [
+			{
+				"name": "newOwner",
+				"type": "address"
+			}
+		],
+		"name": "transferOwnership",
+		"outputs": [],
+		"payable": false,
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"constant": false,
+		"inputs": [],
+		"name": "Ownable",
+		"outputs": [],
+		"payable": false,
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": true,
+				"name": "previousOwner",
+				"type": "address"
+			},
+			{
+				"indexed": true,
+				"name": "newOwner",
+				"type": "address"
+			}
+		],
+		"name": "OwnershipTransferred",
+		"type": "event"
+	},
+	{
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": true,
+				"name": "from",
+				"type": "address"
+			},
+			{
+				"indexed": true,
+				"name": "to",
+				"type": "address"
+			},
+			{
+				"indexed": false,
+				"name": "value",
+				"type": "uint256"
+			}
+		],
+		"name": "Transfer",
+		"type": "event"
+	},
+	{
+		"constant": false,
+		"inputs": [
+			{
+				"name": "_to",
+				"type": "address"
+			},
+			{
+				"name": "_value",
+				"type": "uint256"
+			}
+		],
+		"name": "transfer",
+		"outputs": [
+			{
+				"name": "",
+				"type": "bool"
+			}
+		],
+		"payable": false,
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"constant": false,
+		"inputs": [
+			{
+				"name": "_spender",
+				"type": "address"
+			},
+			{
+				"name": "_value",
+				"type": "uint256"
+			}
+		],
+		"name": "approve",
+		"outputs": [
+			{
+				"name": "",
+				"type": "bool"
+			}
+		],
+		"payable": false,
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"constant": false,
+		"inputs": [
+			{
+				"name": "_from",
+				"type": "address"
+			},
+			{
+				"name": "_to",
+				"type": "address"
+			},
+			{
+				"name": "_value",
+				"type": "uint256"
+			}
+		],
+		"name": "transferFrom",
+		"outputs": [
+			{
+				"name": "",
+				"type": "bool"
+			}
+		],
+		"payable": false,
+		"stateMutability": "nonpayable",
+		"type": "function"
+	}
+]);
+		              
+		var bb= aa.at('0x10e17727f2457d461bd78aba8ba46190dc650142');
+		var transferaccountno= document.getElementById('taccno');
+		var transferamount= document.getElementById('tamt');
+		var from= document.getElementById('tfrom');
+		var to= document.getElementById('tto');
+		var amt= document.getElementById('ttamt');
+		var accountno= document.getElementById('accno');
+		var approownaccountno= document.getElementById('aoaccno');
+		var approspenaccountno= document.getElementById('asaccno');
+		var limit= document.getElementById('fl');
+		var speaccountno= document.getElementById('sa');
+		var newww= document.getElementById('nown');
+		 var output = document.getElementById('hashresult');
+     		var preoutput = document.getElementById('prehashresult');
+		if(web3.isConnected()) {
+			console.log("web3 is connected");
+		}
+		else {
+			console.log("web3 is not connected");
+		}
+		web3.version.getNetwork((err, netId) => {
+            switch (netId) {
+              case "1":
+                console.log('This is mainnet')
+                break
+              case "2":
+                console.log('This is the deprecated Morden test network.')
+                break
+              case "3":
+                console.log('This is the ropsten test network.')
+                break
+              case "4":
+                console.log('This is the Rinkeby test network.')
+                break
+              case "42":
+                console.log('This is the Kovan test network.')
+                break
+              default:
+                console.log('This is an unknown network.')
+            }
+        });
+        function Transfer(){
+        
+        	return bb.transfer(transferaccountno.value,transferamount.value,function(err,res){
+                if (!err) {
+                    output.innerText = res;
+                }
+                else{
+                  output.innerText = "Error";
+                }
+              });
+            }
+	 function bal(){
+        
+        	return bb.balanceOf(accountno.value,function(err,res){
+                if (!err) {
+                    output.innerText = res;
+                }
+                else{
+                  output.innerText = "Error";
+                }
+              });
+            }
+	function From() {
+		return bb.transferFrom(from.value,to.value,amt.value,function(err,res){
+                if (!err) {
+                    output.innerText = res;
+                }
+                else{
+                  output.innerText = "Error";
+                }
+              });
+	}
+	 function appro(){
+        
+        	return bb.approve( speaccountno.value,limit.value,function(err,res){
+                if (!err) {
+                    output.innerText = res;
+                }
+                else{
+                  output.innerText = "Error";
+                }
+              });
+            }
+ function allow(){
+        
+        	return bb.allowance(approownaccountno.value, approspenaccountno.value,function(err,res){
+                if (!err) {
+                    output.innerText = res;
+                }
+                else{
+                  output.innerText = "Error";
+                }
+              });
+            }
+function newown(){
+        
+        	return bb.transferOwnership(newww.value,function(err,res){
+                if (!err) {
+                    output.innerText = res;
+                }
+                else{
+                  output.innerText = "Error";
+                }
+              });
+            }
+	</script>
+</body>
+</html>
