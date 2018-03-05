@@ -16,62 +16,56 @@
 				
 			}
 			body {
-			background-color: coral;
+			
+				 background-color: coral;
+				
 			}
+			
 		</style>
 		 <script src="web3.min.js"></script>
 	</head>
 	<body>
 	         <font>
 		<fieldset>	
+			<label>Deposit amount<input id="amt" type="number"/></label>
+			<label><button  onclick="dep()" >Deposit</button></label>
+		</fieldset>
+		<fieldset>	
+			<label>Withdraw amount<input id="wamt" type="number"/></label>
+			<label><button  onclick="wi()" >Withdraw</button></label>
+		</fieldset>
+		<fieldset>	
 			<label>Transfer amount<input id="tamt" type="number"/></label>
 			<label>Transfer account number<input id="taccno" type="text"/></label>
-			<label><button id="tranb1" onclick="Transfer()" >Transfer</button></label>
+			<label><button  onclick="Transfer()" >Transfer</button></label>
 		</fieldset>
 		<fieldset>
     			<label>Enter your account number<input id="accno" type="text" /></label>
-			<label><button id="bal" onclick="bal()">balanceof</button></label>
+			<label><button onclick="bal()">balanceof</button></label>
 		</fieldset>
 		<fieldset>	
 			<label>Transfer amount<input id="ttamt" type="number"/></label>
 			<label>From account number<input id="tfrom" type="text"/></label>
 			<label>To account number<input id="tto" type="text"/></label>
-			<label><button id="tranb2" onclick="From()" >TransferFrom</button></label>
+			<label><button onclick="From()" >TransferFrom</button></label>
 		</fieldset>
 		<fieldset>	
 			<label>Owner account number<input id="aoaccno" type="text"/></label>
 			<label>Spender account number<input id="asaccno" type="text"/></label>
-			<label><button id="tranb3" onclick="allow()" >Allowance</button></label>
+			<label><button onclick="allow()" >Allowance</button></label>
 		</fieldset>
 		<fieldset>	
 			<label>Fix limit<input id="fl" type="number"/></label>
 			<label>Spender account number<input id="sa" type="text"/></label>
-			<label><button id="tranb4" onclick="appro()" >Approve</button></label>
+			<label><button onclick="appro()" >Approve</button></label>
 		</fieldset>
-		<fieldset>	
-			<label>new account number<input id="nown" type="text"/></label>
-			<label><button id="tranb5" onclick="newown()" >TransferOwnership</button></label>
-		</fieldset>
+		
 		<pre id="hashresult"></pre>
     Previous Hash : <pre id="prehashresult"></pre>
 	</font>
 		<script >
 			web3.eth.defaultAccount = web3.eth.accounts[0];
 			var aa=web3.eth.contract([
-	{
-		"constant": true,
-		"inputs": [],
-		"name": "decimals",
-		"outputs": [
-			{
-				"name": "",
-				"type": "uint256"
-			}
-		],
-		"payable": false,
-		"stateMutability": "view",
-		"type": "function"
-	},
 	{
 		"constant": true,
 		"inputs": [
@@ -97,8 +91,13 @@
 	},
 	{
 		"constant": true,
-		"inputs": [],
-		"name": "totalSupply",
+		"inputs": [
+			{
+				"name": "owner",
+				"type": "address"
+			}
+		],
+		"name": "balanceOf",
 		"outputs": [
 			{
 				"name": "",
@@ -126,20 +125,6 @@
 	{
 		"constant": true,
 		"inputs": [],
-		"name": "owner",
-		"outputs": [
-			{
-				"name": "",
-				"type": "address"
-			}
-		],
-		"payable": false,
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"constant": true,
-		"inputs": [],
 		"name": "name",
 		"outputs": [
 			{
@@ -152,40 +137,27 @@
 		"type": "function"
 	},
 	{
-		"constant": true,
-		"inputs": [
-			{
-				"name": "_owner",
-				"type": "address"
-			}
-		],
-		"name": "balanceOf",
-		"outputs": [
-			{
-				"name": "balance",
-				"type": "uint256"
-			}
-		],
+		"inputs": [],
 		"payable": false,
-		"stateMutability": "view",
-		"type": "function"
+		"stateMutability": "nonpayable",
+		"type": "constructor"
 	},
 	{
 		"anonymous": false,
 		"inputs": [
 			{
-				"indexed": true,
+				"indexed": false,
 				"name": "owner",
 				"type": "address"
 			},
 			{
-				"indexed": true,
-				"name": "spender",
+				"indexed": false,
+				"name": "_spender",
 				"type": "address"
 			},
 			{
 				"indexed": false,
-				"name": "value",
+				"name": "amt",
 				"type": "uint256"
 			}
 		],
@@ -196,20 +168,11 @@
 		"constant": false,
 		"inputs": [
 			{
-				"name": "newOwner",
-				"type": "address"
+				"name": "a",
+				"type": "uint256"
 			}
 		],
-		"name": "transferOwnership",
-		"outputs": [],
-		"payable": false,
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"constant": false,
-		"inputs": [],
-		"name": "Ownable",
+		"name": "withdraw",
 		"outputs": [],
 		"payable": false,
 		"stateMutability": "nonpayable",
@@ -219,35 +182,18 @@
 		"anonymous": false,
 		"inputs": [
 			{
-				"indexed": true,
-				"name": "previousOwner",
+				"indexed": false,
+				"name": "owner",
 				"type": "address"
 			},
 			{
-				"indexed": true,
-				"name": "newOwner",
-				"type": "address"
-			}
-		],
-		"name": "OwnershipTransferred",
-		"type": "event"
-	},
-	{
-		"anonymous": false,
-		"inputs": [
-			{
-				"indexed": true,
-				"name": "from",
-				"type": "address"
-			},
-			{
-				"indexed": true,
+				"indexed": false,
 				"name": "to",
 				"type": "address"
 			},
 			{
 				"indexed": false,
-				"name": "value",
+				"name": "amt",
 				"type": "uint256"
 			}
 		],
@@ -267,14 +213,9 @@
 			}
 		],
 		"name": "transfer",
-		"outputs": [
-			{
-				"name": "",
-				"type": "bool"
-			}
-		],
-		"payable": false,
-		"stateMutability": "nonpayable",
+		"outputs": [],
+		"payable": true,
+		"stateMutability": "payable",
 		"type": "function"
 	},
 	{
@@ -294,6 +235,25 @@
 			{
 				"name": "",
 				"type": "bool"
+			}
+		],
+		"payable": false,
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"constant": false,
+		"inputs": [
+			{
+				"name": "amount",
+				"type": "uint256"
+			}
+		],
+		"name": "totalSupply",
+		"outputs": [
+			{
+				"name": "",
+				"type": "uint256"
 			}
 		],
 		"payable": false,
@@ -329,8 +289,10 @@
 	}
 ]);
 		              
-		var bb= aa.at('0x10e17727f2457d461bd78aba8ba46190dc650142');
+		var bb= aa.at('0x1f92d51736e1e2c8772f35a5f65461d231a72aea');
 		var transferaccountno= document.getElementById('taccno');
+		var dd= document.getElementById('amt');
+		var ww= document.getElementById('wamt');
 		var transferamount= document.getElementById('tamt');
 		var from= document.getElementById('tfrom');
 		var to= document.getElementById('tto');
@@ -340,7 +302,7 @@
 		var approspenaccountno= document.getElementById('asaccno');
 		var limit= document.getElementById('fl');
 		var speaccountno= document.getElementById('sa');
-		var newww= document.getElementById('nown');
+		
 		 var output = document.getElementById('hashresult');
      		var preoutput = document.getElementById('prehashresult');
 		if(web3.isConnected()) {
@@ -370,6 +332,29 @@
                 console.log('This is an unknown network.')
             }
         });
+
+	 function dep(){
+        
+        	return bb.totalSupply(dd.value,function(err,res){
+                if (!err) {
+                    output.innerText = res;
+                }
+                else{
+                  output.innerText = "Error";
+                }
+              });
+            }
+	 function wi(){
+        
+        	return bb.withdraw(ww.value,function(err,res){
+                if (!err) {
+                    output.innerText = res;
+                }
+                else{
+                  output.innerText = "Error";
+                }
+              });
+            }
         function Transfer(){
         
         	return bb.transfer(transferaccountno.value,transferamount.value,function(err,res){
@@ -424,17 +409,7 @@
                 }
               });
             }
-function newown(){
-        
-        	return bb.transferOwnership(newww.value,function(err,res){
-                if (!err) {
-                    output.innerText = res;
-                }
-                else{
-                  output.innerText = "Error";
-                }
-              });
-            }
+
 	</script>
 </body>
 </html>
