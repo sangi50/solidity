@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Election</title>
+		<style>
+			label {
+				display:block;
+				padding:10px;
+			}
+			fieldset {
+				width:400px;
+				text-align:right;
+			}
+			font {
+				font-family: "Times New Roman";
+				
+			}
+			body {
+				background-color: lightgreen;
+				background-image:("");
+			}
+		</style>
+		 <script src="web3.min.js"></script>
+	</head>
+	<body>
+	         <font>
+		<fieldset>	
+			<label>CandidateName<input id="cname" type="text"/></label>
+			<label>CandidateId<input id="cid" type="number"/></label>
+			<label><button  onclick="can()" >CandidateDetails</button></label>
+		</fieldset>
+		<fieldset>	
+			<label>VoterId<input id="vid" type="number"/></label>
+			<label>CandidateId<input id="vcid" type="number"/></label>
+			<label><button  onclick="vote()" >Vote</button></label>
+		</fieldset>
+		<fieldset>
+			<label>CandidateId<input id="rcid" type="number"/></label>
+			<label><button  onclick="result()" >Result</button></label>
+		</fieldset>
+		<fieldset>
+			<label><button onclick="win()">Winner</button></label>
+		<pre id="hashresult"></pre>
+    Previous Hash : <pre id="prehashresult"></pre>
+	</font>
+		<script >
+			web3.eth.defaultAccount = web3.eth.accounts[0];
+			var aa=web3.eth.contract([
+	{
+		"constant": false,
+		"inputs": [
+			{
+				"name": "name",
+				"type": "string"
+			},
+			{
+				"name": "id",
+				"type": "uint256"
+			}
+		],
+		"name": "candidate_Details",
+		"outputs": [],
+		"payable": false,
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"constant": false,
+		"inputs": [
+			{
+				"name": "voterid",
+				"type": "uint256"
+			},
+			{
+				"name": "candidateid",
+				"type": "uint256"
+			}
+		],
+		"name": "Voting",
+		"outputs": [],
+		"payable": false,
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"constant": true,
+		"inputs": [
+			{
+				"name": "candidateid",
+				"type": "uint256"
+			}
+		],
+		"name": "Result",
+		"outputs": [
+			{
+				"name": "",
+				"type": "uint256"
+			},
+			{
+				"name": "",
+				"type": "string"
+			}
+		],
+		"payable": false,
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"constant": true,
+		"inputs": [],
+		"name": "winner",
+		"outputs": [
+			{
+				"name": "",
+				"type": "string"
+			}
+		],
+		"payable": false,
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"payable": false,
+		"stateMutability": "nonpayable",
+		"type": "constructor"
+	}
+]);
+			var bb= aa.at('0x49e4476f5b198953093c48f56442199f20006c47');
+			var candname=document.getElementById('cname');
+			var candid=document.getElementById('cid');
+			var voteid=document.getElementById('vid');
+			var vcandid=document.getElementById('vcid');
+			var res=document.getElementById('rcid');
+			var output = document.getElementById('hashresult');
+     			var preoutput = document.getElementById('prehashresult');
+		if(web3.isConnected()) {
+			console.log("web3 is connected");
+		}
+		else {
+			console.log("web3 is not connected");
+		}
+		web3.version.getNetwork((err, netId) => {
+            switch (netId) {
+              case "1":
+                console.log('This is mainnet')
+                break
+              case "2":
+                console.log('This is the deprecated Morden test network.')
+                break
+              case "3":
+                console.log('This is the ropsten test network.')
+                break
+              case "4":
+                console.log('This is the Rinkeby test network.')
+                break
+              case "42":
+                console.log('This is the Kovan test network.')
+                break
+              default:
+                console.log('This is an unknown network.')
+            }
+        });
+
+	 function can(){
+        
+        	return bb.candidate_Details(candname.value,candid.value,function(err,res){
+                if (!err) {
+                    output.innerText = res;
+                }
+                else{
+                  output.innerText = "Error";
+                }
+              });
+            }
+	 function vote(){
+        
+        	return bb.Voting(voteid.value,vcandid.value,function(err,res){
+                if (!err) {
+                    output.innerText = res;
+                }
+                else{
+                  output.innerText = "Error";
+                }
+              });
+            }
+	function result(){
+        
+        	return bb.Result(rcid.value,function(err,res){
+                if (!err) {
+                    output.innerText = res;
+                }
+                else{
+                  output.innerText = "Error";
+                }
+              });
+            }
+	 function win(){
+        
+        	return bb.winner(function(err,res){
+                if (!err) {
+                    output.innerText = res;
+                }
+                else{
+                  output.innerText = "Error";
+                }
+              });
+            }
+</script>
+</body>
+</html>
